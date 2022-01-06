@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ regexFind "[^/]+$" .Values.image }}
+  labels:
+    app: {{ regexFind "[^/]+$" .Values.image }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ regexFind "[^/]+$" .Values.image }}
+  template:
+    metadata:
+      labels:
+        app: {{ regexFind "[^/]+$" .Values.image }}
+    spec:
+      imagePullSecrets:
+        - name: {{ .Values.image_pull_secret }}
+      containers:
+      - name: {{ regexFind "[^/]+$" .Values.image }}
+        image: "{{ .Values.image }}:{{ .Values.tag }}"
+        {{ if .Values.env }}
+        {{ $length := len .Values.env }}
+        {{ if gt $length 0 }}
+        env:
+        {{ range $key, $value := .Values.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+        {{ end }}
+        {{ end }}
+        {{ end }}
+        {{ if .Values.secrets }}
+        {{ $length := len .Values.secrets }}
+        {{ if gt $length 0 }}
+        envFrom:
+          - secretRef:
+              name: {{ regexFind "[^/]+$" .Values.image }}
+        {{ end }}
+        {{ end }}

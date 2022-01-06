@@ -1,0 +1,4 @@
+replicas: 1
+image_pull_secret: docker-credentials
+ingress:
+  class: nginx

@@ -1,0 +1,28 @@
+{{ if .Values.route }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ regexFind "[^/]+$" .Values.image }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ regexFind "[^/]+$" .Values.image }}
+  ports:
+    {{ if .Values.route.http -}}
+    - protocol: TCP
+      name: http
+      port: 80
+      targetPort: {{ .Values.route.http.port }}
+    {{- else -}}
+    - protocol: TCP
+        name: http
+        port: 80
+        targetPort: 8080
+    {{- end }}
+    {{ if .Values.route.grpc -}}
+    - protocol: TCP
+      name: grpc
+      port: 81
+      targetPort: {{ default 8081 .Values.route.grpc.port }}
+    {{- end}}
+{{ end }}

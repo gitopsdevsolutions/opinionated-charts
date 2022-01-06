@@ -1,0 +1,22 @@
+{{ if .Values.route }}
+{{ if not (eq .Values.route.host "") }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ regexFind "[^/]+$" .Values.image }}
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.ingress.class }}
+spec:
+  rules:
+  - host: {{ .Values.route.host }}
+    http:
+      paths:
+        - path: {{ default "/" .Values.route.path }}
+          pathType: Prefix
+          backend:
+            service:
+              name: {{ regexFind "[^/]+$" .Values.image }}
+              port:
+                number: 80
+{{ end }}
+{{ end }}

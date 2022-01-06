@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ regexFind "[^/]+$" .Values.image }}
+  labels:
+    app: {{ regexFind "[^/]+$" .Values.image }}
+spec:
+  schedule: {{ .Values.interval }}
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  concurrencyPolicy: "Forbid"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          imagePullSecrets:
+            - name: {{ .Values.image_pull_secret }}
+          containers:
+            - name: {{ regexFind "[^/]+$" .Values.image }}
+              imagePullPolicy: Never
+              image: "{{ .Values.image }}:{{ .Values.tag }}"
+              {{ if .Values.env }}
+              {{ $length := len .Values.env }}
+              {{ if gt $length 0 }}
+              env:
+              {{ range $key, $value := .Values.env }}
+              - name: "{{ $key }}"
+                value: "{{ $value }}"
+              {{ end }}
+              {{ end }}
+              {{ end }}
+              {{ if .Values.secrets }}
+              {{ $length := len .Values.secrets }}
+              {{ if gt $length 0 }}
+              envFrom:
+                - secretRef:
+                    name: {{ regexFind "[ ^/ ]+$" .Values.image }}
+              {{ end }}
+              {{ end }}
+          restartPolicy: OnFailure
