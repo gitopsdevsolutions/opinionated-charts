@@ -5,7 +5,7 @@ metadata:
   labels:
     app: {{ regexFind "[^/]+$" .Values.image }}
 spec:
-  schedule: {{ .Values.interval }}
+  schedule: "{{ .Values.interval }}"
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   concurrencyPolicy: "Forbid"
