@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ .Values.image }}
+  name: {{ regexFind "[^/]+$" .Values.image }}
 spec:
   ttlSecondsAfterFinished: 10
   template:
@@ -9,7 +9,7 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.image_pull_secret }}
       containers:
-        - name: {{ .Values.image }}
+        - name: {{ regexFind "[^/]+$" .Values.image }}
           imagePullPolicy: Never
           image: "{{ .Values.image }}:{{ .Values.tag }}"
           {{ if .Values.env }}
