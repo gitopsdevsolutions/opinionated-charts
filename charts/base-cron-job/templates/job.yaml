@@ -37,4 +37,5 @@ spec:
                     name: {{ regexFind "[ ^/ ]+$" .Values.image }}
               {{ end }}
               {{ end }}
-          restartPolicy: OnFailure
+          restartPolicy: Never
+      backoffLimit: 0
