@@ -12,6 +12,9 @@ spec:
   jobTemplate:
     spec:
       template:
+        metadata:
+          labels:
+            godsCronJob: {{ regexFind "[^/]+$" .Values.image }}
         spec:
           imagePullSecrets:
             - name: {{ .Values.image_pull_secret }}
