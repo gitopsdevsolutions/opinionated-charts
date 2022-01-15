@@ -19,6 +19,7 @@ spec:
       containers:
       - name: {{ regexFind "[^/]+$" .Values.image }}
         image: "{{ .Values.image }}:{{ .Values.tag }}"
+        imagePullPolicy: Never
         {{ if .Values.env }}
         {{ $length := len .Values.env }}
         {{ if gt $length 0 }}
