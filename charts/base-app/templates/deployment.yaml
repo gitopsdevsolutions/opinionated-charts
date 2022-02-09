@@ -17,7 +17,7 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.image_pull_secret }}
       containers:
-      - name: {{ regexFind "[^/]+$" .Values.image }}
+      - name: {{ regexFind "[^/]+$" .Values.gitopscd.env_key }}
         image: "{{ .Values.image }}:{{ .Values.tag }}"
         imagePullPolicy: Never
         {{ if .Values.env }}
