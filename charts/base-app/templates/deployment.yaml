@@ -1,23 +1,24 @@
+{{ $imageName := {{ regexFind "[^/]+$" .Values.image }}}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ regexFind "[^/]+$" .Values.image }}
+  name: {{ $imageName }}
   labels:
-    app: {{ regexFind "[^/]+$" .Values.image }}
+    app: {{ $imageName }}
 spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: {{ regexFind "[^/]+$" .Values.image }}
+      app: {{ $imageName }}
   template:
     metadata:
       labels:
-        app: {{ regexFind "[^/]+$" .Values.image }}
+        app: {{ $imageName }}
     spec:
       imagePullSecrets:
         - name: {{ .Values.image_pull_secret }}
       containers:
-      - name: {{ regexFind "[^/]+$" .Values.gitopscd.env_key }}
+      - name: {{ regexReplace . - $imageName  }}
         image: "{{ .Values.image }}:{{ .Values.tag }}"
         imagePullPolicy: Never
         {{ if .Values.env }}
