@@ -19,7 +19,7 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.image_pull_secret }}
       containers:
-      - name: {{ "$imageName" | replace "." "-" }}
+      - name: {{ $imageName | replace "." "-" }}
         image: "{{ .Values.image }}:{{ .Values.tag }}"
         imagePullPolicy: Never
         {{ if .Values.env }}
